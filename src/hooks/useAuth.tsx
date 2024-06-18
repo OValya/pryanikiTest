@@ -1,10 +1,11 @@
 import {createContext, ReactNode, useContext, useState} from "react";
+//import {Navigate} from "react-router-dom";
 import {useNavigate} from "react-router-dom";
 
 type AuthContextType = {
     token: string;
     user: string;
-    login: (data:string) => void;
+    login:  (data:string) => void;
     logout: (id: number) => void;
 }
 
@@ -20,15 +21,18 @@ const AuthProvider = ({children}:Props) => {
 
 
     const login = async (data:string) => {
+        console.log('login data', data)
         setUser(data)
         setToken(data)
-        console.log(data)
+        console.log('auth login')
+
+        navigate("/", {replace:true})
     }
 
     const logout = () => {
         setUser('')
         setToken('')
-        navigate("/", {replace:true})
+
     }
 
     return <AuthContext.Provider value={{user, token, login, logout}}>

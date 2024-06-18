@@ -1,20 +1,30 @@
 import {FormEvent} from "react";
 import {Box, Button, TextField, Typography, Container, Link} from "@mui/material";
 import {Link as RouterLink} from "react-router-dom";
+import {useAuth} from "../hooks/useAuth.tsx";
 
 const Login = () => {
     // const [email, setEmail] = useState('');
     // const [password, setPassword] = useState('');
-
-    const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
+    const user = useAuth();
+    const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget)
-        console.log(
-            {
-                email: data.get('email'),
-                password:data.get('password')
-            }
-        )
+        const email = data.get('email')
+        const password = data.get('password')
+        if (email === "user" && password === "password") {
+            // todo сделать аутентификацию
+            console.log('login auth data', user)
+            user?.login('all work!');
+        } else {
+            alert("Invalid username or password");
+        }
+        // console.log(
+        //     {
+        //         email: data.get('email'),
+        //         password:data.get('password')
+        //     }
+        // )
     }
 
     return (
