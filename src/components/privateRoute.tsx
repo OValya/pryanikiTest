@@ -7,8 +7,12 @@ type Props ={
 }
 const PrivateRoute = ({children}:Props) => {
     const user = useAuth();
-    console.log('private', user?.user)
-    return user?.user ? children : <Navigate to={"/login"}/>
+   // console.log('private', user?.token)
+   //  const token = localStorage.getItem('token')
+   //  if(token){
+   //      user?.login({token: token})
+   //  }
+    return user?.token ? children : <Navigate to={"/login"}/>
 };
 
 export default PrivateRoute;

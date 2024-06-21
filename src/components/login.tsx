@@ -10,12 +10,23 @@ const Login = () => {
     const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget)
-        const email = data.get('email')
+        const username = data.get('username')
         const password = data.get('password')
-        if (email === "user" && password === "password") {
-            // todo сделать аутентификацию
-            console.log('login auth data', user)
-            user?.login('all work!');
+        const host = 'https://test.v5.pryaniky.com' //todo get from env
+        const response = await fetch(host + '/ru/data/v3/testmethods/docs/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username,
+                password
+            })
+        })
+        const json= await response.json()
+        if (json.data) {
+            const token = json.data['token']
+            user?.login({token: token})
         } else {
             alert("Invalid username or password");
         }
