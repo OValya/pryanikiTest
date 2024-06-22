@@ -3,8 +3,6 @@ import {Box, Button, TextField, Typography, Container, Link} from "@mui/material
 import {Link as RouterLink} from "react-router-dom";
 
 const Registration = () => {
-    // const [email, setEmail] = useState('');
-    // const [password, setPassword] = useState('');
 
     const handleSubmit = (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();

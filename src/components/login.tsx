@@ -4,8 +4,6 @@ import {Link as RouterLink} from "react-router-dom";
 import {useAuth} from "../hooks/useAuth.tsx";
 
 const Login = () => {
-    // const [email, setEmail] = useState('');
-    // const [password, setPassword] = useState('');
     const user = useAuth();
     const handleSubmit = async (e:FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -30,12 +28,6 @@ const Login = () => {
         } else {
             alert("Invalid username or password");
         }
-        // console.log(
-        //     {
-        //         email: data.get('email'),
-        //         password:data.get('password')
-        //     }
-        // )
     }
 
     return (
@@ -55,8 +47,6 @@ const Login = () => {
                             id="outlined-email-input"
                             name={'email'}
                             label="E-mail"
-                            // value={email}
-                            // onChange={(e)=>setEmail(e.target.value)}
                         />
 
                         <TextField
@@ -66,8 +56,6 @@ const Login = () => {
                             type="password"
                             name={'password'}
                             autoComplete="current-password"
-                            // value={password}
-                            // onChange={(e)=>{setPassword(e.target.value)}}
                         />
                         <Button type="submit" variant="contained">Sign in</Button>
 
