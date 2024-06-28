@@ -1,5 +1,3 @@
-
-
 import './App.css'
 import {Routes, Route} from "react-router-dom"
 import Login from "./components/login.tsx";
@@ -8,8 +6,6 @@ import AuthProvider from "./hooks/useAuth.tsx";
 import PrivateRoute from "./components/privateRoute.tsx";
 
 function App() {
-
-
     return (
         <AuthProvider>
             <Routes>
@@ -20,10 +16,8 @@ function App() {
                     </PrivateRoute>}
                 />
                 <Route path="/login" element={<Login />} />
-
             </Routes>
         </AuthProvider>
-
     );
 }
 

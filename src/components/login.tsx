@@ -10,7 +10,8 @@ const Login = () => {
         const data = new FormData(e.currentTarget)
         const username = data.get('username')
         const password = data.get('password')
-        const host = 'https://test.v5.pryaniky.com' //todo get from env
+        const host = process.env.REACT_APP_HOST;//'https://test.v5.pryaniky.com' //todo get from env
+
         const response = await fetch(host + '/ru/data/v3/testmethods/docs/login', {
             method: 'POST',
             headers: {
