@@ -6,15 +6,14 @@ import {
     DialogContent,
     DialogActions
 } from "@mui/material";
-//import {useState} from "react";
 import {DataTable} from "./dataGridComp.tsx";
 
 interface Props  {
     open:boolean;
     onClose: (value:DataTable | null) => void;
-    // value:string;
+    value:DataTable|null;
 }
-const ModalComp = ({open, onClose}:Props) => {
+const ModalComp = ({open, onClose, value}:Props) => {
     const handleClose = () => {
         onClose(null);
     }
@@ -25,24 +24,11 @@ const ModalComp = ({open, onClose}:Props) => {
         const formJson:DataTable = Object.fromEntries(formData.entries());
         formJson.companySigDate = new Date(formJson.companySigDate as string).toISOString();
         formJson.employeeSigDate = new Date(formJson.employeeSigDate as string).toISOString();
+        formJson.id = value?.id || '';
         console.log(formJson);
         onClose(formJson);
-        //setData(formJson);
-        //handleClose();
     }
 
-    //const [data, setData] = useState<DataTable|null>(null)
-    // const style = {
-    //     position: 'absolute' as 'absolute',
-    //     top: '50%',
-    //     left: '50%',
-    //     transform: 'translate(-50%, -50%)',
-    //     width: 400,
-    //     bgcolor: 'background.paper',
-    //     border: '2px solid #000',
-    //     boxShadow: 24,
-    //     p: 4,
-    // }
     return (
         <Dialog open={open}
                 onClose={handleClose}
@@ -62,6 +48,7 @@ const ModalComp = ({open, onClose}:Props) => {
                     name="documentType"
                     label="Document Type"
                     fullWidth
+                    defaultValue={value?.documentType}
                     variant="standard"
                 />
                 <TextField
@@ -70,6 +57,7 @@ const ModalComp = ({open, onClose}:Props) => {
                     name="documentName"
                     label="Document Name"
                     fullWidth
+                    defaultValue={value?.documentName}
                     variant="standard"
                 />
                 <TextField
@@ -78,6 +66,7 @@ const ModalComp = ({open, onClose}:Props) => {
                     name="documentStatus"
                     label="Document Status"
                     fullWidth
+                    defaultValue={value?.documentStatus}
                     variant="standard"
                 />
                 <TextField
@@ -87,6 +76,7 @@ const ModalComp = ({open, onClose}:Props) => {
                     name="companySigDate"
                     label="Company Signature Date"
                     fullWidth
+                    defaultValue={value?.companySigDate}
                     variant="outlined"
                 />
                 <TextField
@@ -95,6 +85,7 @@ const ModalComp = ({open, onClose}:Props) => {
                     name="companySignatureName"
                     label="Company Signature Name"
                     fullWidth
+                    defaultValue={value?.companySignatureName}
                     variant="standard"
                 />
                 <TextField
@@ -103,6 +94,7 @@ const ModalComp = ({open, onClose}:Props) => {
                     name="employeeNumber"
                     label="Employee Number"
                     fullWidth
+                    defaultValue={value?.employeeNumber}
                     variant="standard"
                 />
                 <TextField
@@ -112,6 +104,7 @@ const ModalComp = ({open, onClose}:Props) => {
                     name="employeeSigDate"
                     label="Employee Signature Date"
                     fullWidth
+                    defaultValue={value?.employeeSigDate}
                     variant="outlined"
                 />
                 <TextField
@@ -120,31 +113,18 @@ const ModalComp = ({open, onClose}:Props) => {
                     name="employeeSignatureName"
                     label="Employee Signature Name"
                     fullWidth
+                    defaultValue={value?.employeeSignatureName}
                     variant="standard"
                 />
             </DialogContent>
             <DialogActions>
                 <Button
                     type="submit"
-                    // fullWidth
-                    // variant="contained"
-                    // sx={{mt: 3, mb: 2}}
                 >
                     Save
                 </Button>
                 <Button onClick={handleClose}>Cancel</Button>
             </DialogActions>
-            {/*<Box sx={style}>*/}
-            {/*    <Typography id="modal-modal-title" variant="h6" component="h2">*/}
-            {/*        Enter data*/}
-            {/*    </Typography>*/}
-            {/*    <form onSubmit={handleClose}>*/}
-
-
-
-            {/*    </form>*/}
-
-            {/*</Box>*/}
         </Dialog>
     );
 };
