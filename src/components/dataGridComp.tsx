@@ -2,8 +2,9 @@ import {Box, Button} from "@mui/material";
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import {useAuth} from "../hooks/useAuth.tsx";
 import {useEffect, useState} from "react";
+import ModalComp from "./modalComp.tsx";
 
-interface DataTable {
+export interface DataTable {
     companySigDate: string;
     companySignatureName: string;
     documentName: string;
@@ -12,7 +13,7 @@ interface DataTable {
     employeeNumber: string;
     employeeSigDate: string;
     employeeSignatureName: string;
-    id: string;
+    id?: string;
 }
 
 
@@ -21,9 +22,11 @@ const DataGridComp = () => {
     const host = import.meta.env.VITE_HOST
 
     const getURL = '/ru/data/v3/testmethods/docs/userdocs/get';
-    const addURL = '/ru/data/v3/testmethods/docs/userdocs/add';
+    const addURL = '/ru/data/v3/testmethods/docs/userdocs/create';
     const deleteURL = '/ru/data/v3/testmethods/docs/userdocs/delete/';
 
+    const [modalValue, setModalValue] = useState<DataTable|null>(null)
+    const [openModal, setOpenModal] = useState<boolean>(false)
     const [idRow, setIdRow] = useState<string>('')
     const [data, setData] = useState<DataTable[]>([{
         companySigDate: '',
@@ -51,6 +54,20 @@ const DataGridComp = () => {
         fetchRequest()
     }, [])
 
+    const postRequest = async (value:DataTable) => {
+        console.log('stringify', JSON.stringify(value))
+        const response = await fetch(host + addURL, {
+            method: 'POST',
+            body: JSON.stringify(value),
+            headers:{
+                "Content-Type": "application/json",
+                'x-auth': user?.token ? user?.token : ''
+            },
+        })
+        console.log('res', response)
+
+    }
+
     const columns: GridColDef<(typeof data)[number]>[] = [
         { field: 'id', headerName: 'ID', width: 90 },
         {
@@ -66,7 +83,38 @@ const DataGridComp = () => {
             editable: true,
         },
         {
+            field: 'documentType',
+            headerName: 'type',
+            width: 150,
+            editable: true,
+        },
+        {
+            field: 'employeeNumber',
+            headerName: 'employee number',
+            width: 150,
+            editable: true,
+        },
+        {
+            field: 'employeeSigName',
+            headerName: 'employee signature',
+            width: 150,
+            editable: true,
+        },
+        {
             field: 'employeeSigDate',
+            headerName: 'date',
+            // type: 'date',
+            width: 110,
+            editable: true,
+        },
+        {
+            field: 'companySigName',
+            headerName: 'employee signature',
+            width: 150,
+            editable: true,
+        },
+        {
+            field: 'companySigDate',
             headerName: 'date',
             // type: 'date',
             width: 110,
@@ -83,8 +131,8 @@ const DataGridComp = () => {
     ];
 
     const handleRowSelection = (params: DataTable) => {
-        console.log(params.id)
-        setIdRow(params.id)
+        //console.log(params.id)
+        setIdRow(params.id!)
     }
 
     const handleDeleteRow = async () => {
@@ -111,11 +159,23 @@ const DataGridComp = () => {
         //setRows((prevRows) => [...prevRows, createRandomRow()]);
     };
 
+    const handleCloseModal = (value:DataTable|null) => {
+       // setModalValue(value)
+        setOpenModal(false)
+        if(value) {
+            console.log('from parent',value);
+            postRequest(value);
+        }
+    }
+    const handleOpenModal = () => {
+        setOpenModal(true)
+    }
+
 
     return (
         <Box sx={{ height: 400, width: '100%' }}>
             <DataGrid
-                getRowId={(data) => data.id}
+                getRowId={(data) => data.id!}
                 rows={data}
                 columns={columns}
                 initialState={{
@@ -131,9 +191,10 @@ const DataGridComp = () => {
                // disableRowSelectionOnClick
             />
             <Box padding={2} sx={{ display: 'flex', justifyContent: 'center', columnGap: 2, alignItems: 'center' }}>
-                <Button onClick={handleAddRow} variant={'contained'}>Добавить запись</Button>
+                <Button onClick={handleOpenModal} variant={'contained'}>Добавить запись</Button>
                 <Button onClick={handleDeleteRow} variant={'outlined'}>Удалить запись</Button>
             </Box>
+            <ModalComp open={openModal} onClose={handleCloseModal} />
 
         </Box>
     );
