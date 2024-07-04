@@ -25,8 +25,8 @@ const checkData =  (res: Response) => {
 const DataGridComp = () => {
     const user = useAuth()
     const host = import.meta.env.VITE_HOST
-
-    const getURL = '/ru/data/v3/testmethods/docs/userdocs/get'; //todo get from env
+//todo get from env
+    const getURL = '/ru/data/v3/testmethods/docs/userdocs/get';
     const addURL = '/ru/data/v3/testmethods/docs/userdocs/create';
     const deleteURL = '/ru/data/v3/testmethods/docs/userdocs/delete/';
     const editURL = '/ru/data/v3/testmethods/docs/userdocs/set/';
@@ -54,7 +54,6 @@ const DataGridComp = () => {
         })
         const json:{data:DataTable[]} = await response.json()
         setData(json.data)
-        console.log(json.data)
     }
     useEffect(() => {
         fetchRequest()
