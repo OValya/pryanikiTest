@@ -4,10 +4,12 @@ import Login from "./components/login.tsx";
 import Home from "./components/home.tsx";
 import AuthProvider from "./hooks/useAuth.tsx";
 import PrivateRoute from "./components/privateRoute.tsx";
+import BarComp from "./components/barComp.tsx";
 
 function App() {
     return (
         <AuthProvider>
+            <BarComp/>
             <Routes>
                 <Route path="/"
                        element={

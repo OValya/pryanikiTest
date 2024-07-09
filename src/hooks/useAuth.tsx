@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 type AuthContextType = {
     token: string;
     login:  (data: { token: string }) => void;
-    logout: (id: number) => void;
+    logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType|null>(null);

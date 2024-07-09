@@ -1,8 +1,9 @@
-import {Box, Button} from "@mui/material";
+import {Box, Button, Alert} from "@mui/material";
 import {DataGrid, GridColDef, GridRowParams} from '@mui/x-data-grid';
 import {useAuth} from "../hooks/useAuth.tsx";
 import {useEffect, useState} from "react";
 import ModalComp from "./modalComp.tsx";
+import Loader from "./loader.tsx";
 
 export interface DataTable {
     companySigDate: string;
@@ -16,9 +17,9 @@ export interface DataTable {
     id?: string;
 }
 
-const checkData =  (res: Response) => {
+const checkData = (res: Response) => {
     if (res.status != 200) {
-        throw new Error('Error status: '+ res.status )
+        throw new Error('Error status: ' + res.status)
     }
 }
 
@@ -31,9 +32,11 @@ const DataGridComp = () => {
     const deleteURL = '/ru/data/v3/testmethods/docs/userdocs/delete/';
     const editURL = '/ru/data/v3/testmethods/docs/userdocs/set/';
 
-    const [modalValue, setModalValue] = useState<DataTable|null>(null)
+    const [error, setError] = useState('')
+    const [loading, setLoading] = useState(false)
+    const [modalValue, setModalValue] = useState<DataTable | null>(null)
     const [openModal, setOpenModal] = useState<boolean>(false)
-    const [mode, setMode] = useState<'edit'|'add'>('add')
+    const [mode, setMode] = useState<'edit' | 'add'>('add')
     const [data, setData] = useState<DataTable[]>([{
         companySigDate: '',
         companySignatureName: '',
@@ -45,43 +48,56 @@ const DataGridComp = () => {
         employeeSignatureName: '',
         id: '',
     }])
-    const fetchRequest = async () =>{
-        const response = await fetch(host+getURL,{
-            method: 'GET',
-            headers: {
-                'x-auth': user?.token ? user?.token : ''
-            },
-        })
-        const json:{data:DataTable[]} = await response.json()
-        setData(json.data)
+    const fetchRequest = async () => {
+        try {
+            if (!loading) {
+                setLoading(true)
+            }
+            const response = await fetch(host + getURL, {
+                method: 'GET',
+                headers: {
+                    'x-auth': user?.token ? user?.token : ''
+                },
+            })
+            const json: { data: DataTable[] } = await response.json()
+            setData(json.data)
+            setLoading(false)
+            // console.log('json', json.data)
+        } catch
+            (error) {
+            console.log('error', error)
+        }
     }
+
     useEffect(() => {
         fetchRequest()
     }, [])
 
-    const postRequest = async (value:DataTable) => {
-        const url = mode=='edit' ? editURL+value.id : addURL
-
-        try{
+    const postRequest = async (value: DataTable) => {
+        const url = mode == 'edit' ? editURL + value.id : addURL
+        setLoading(true)
+        try {
             const res = await fetch(host + url, {
                 method: 'POST',
                 body: JSON.stringify(value),
-                headers:{
-                     "Content-Type": "application/json",
+                headers: {
+                    "Content-Type": "application/json",
                     'x-auth': user?.token ? user?.token : ''
                 },
             })
             checkData(res)
             fetchRequest()
-        }
-        catch (error) {
-            console.log('error',error) //todo show error
+
+        } catch (error) {
+            setLoading(false)
+            console.log('error', error) //todo show error
         }
 
+        setModalValue(null)
     }
 
     const columns: GridColDef<(typeof data)[number]>[] = [
-        { field: 'id', headerName: 'ID', width: 90 },
+        {field: 'id', headerName: 'ID', width: 90},
         {
             field: 'documentName',
             headerName: 'doc name',
@@ -138,6 +154,7 @@ const DataGridComp = () => {
         if (!idRow) {
             return;
         }
+        setLoading(true)
 
         await fetch(`${host}${deleteURL}${idRow}`, {
             method: 'POST',
@@ -146,7 +163,13 @@ const DataGridComp = () => {
             },
         })
 
+        setModalValue(null);
+
         await fetchRequest()
+
+        //onsole.log('del')
+
+        setLoading(false)
 
     };
 
@@ -169,19 +192,22 @@ const DataGridComp = () => {
     const handleEditRow = () => {
         setMode('edit')
         setOpenModal(true)
+
     }
 
-    const handleCloseModal = (value:DataTable|null) => {
+    const handleCloseModal = (value: DataTable | null) => {
 
         setOpenModal(false)
-        if(value) {
+        if (value) {
             postRequest(value);
         }
     }
 
 
     return (
-        <Box sx={{ height: 400, width: '100%' }}>
+        <Box sx={{height: 400, width: '100%'}}>
+            {error && <Alert severity="error">{error}</Alert>}
+            {loading && <Loader/>}
             <DataGrid
                 getRowId={(data) => data.id!}
                 rows={data}
@@ -196,12 +222,14 @@ const DataGridComp = () => {
                 onRowClick={handleRowSelection}
                 pageSizeOptions={[5]}
             />
-            <Box padding={2} sx={{ display: 'flex', justifyContent: 'center', columnGap: 2, alignItems: 'center' }}>
+            <Box padding={2} sx={{display: 'flex', justifyContent: 'center', columnGap: 2, alignItems: 'center'}}>
                 <Button onClick={handleAddRow} variant={'contained'}>Добавить запись</Button>
-                <Button onClick={handleEditRow} variant={'contained'}>Редактировать запись</Button>
-                <Button onClick={handleDeleteRow} variant={'outlined'}>Удалить запись</Button>
+                <Button disabled={modalValue === null} onClick={handleEditRow} variant={'contained'}>Редактировать
+                    запись</Button>
+                <Button disabled={modalValue === null} onClick={handleDeleteRow} variant={'outlined'}>Удалить
+                    запись</Button>
             </Box>
-            <ModalComp  open={openModal} onClose={handleCloseModal} value={modalValue}/>
+            <ModalComp open={openModal} onClose={handleCloseModal} value={modalValue}/>
 
         </Box>
     );
