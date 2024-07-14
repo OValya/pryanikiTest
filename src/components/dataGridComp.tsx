@@ -1,9 +1,10 @@
-import {Box, Button, Alert} from "@mui/material";
+import {Box, Button} from "@mui/material";
 import {DataGrid, GridColDef, GridRowParams} from '@mui/x-data-grid';
 import {useAuth} from "../hooks/useAuth.tsx";
 import {useEffect, useState} from "react";
 import ModalComp from "./modalComp.tsx";
 import Loader from "./loader.tsx";
+import ErrorComp from "./errorComp.tsx";
 
 export interface DataTable {
     companySigDate: string;
@@ -15,6 +16,13 @@ export interface DataTable {
     employeeSigDate: string;
     employeeSignatureName: string;
     id?: string;
+}
+
+export interface MessageType {
+    type: 'error' | 'success',
+    message: string,
+    open: boolean,
+   // handleClose: (event: React.SyntheticEvent | Event, reason?: string) => void
 }
 
 const checkData = (res: Response) => {
@@ -32,7 +40,23 @@ const DataGridComp = () => {
     const deleteURL = '/ru/data/v3/testmethods/docs/userdocs/delete/';
     const editURL = '/ru/data/v3/testmethods/docs/userdocs/set/';
 
-    const [error, setError] = useState('')
+const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+        return;
+    }
+    setMessage({
+        type: 'error',
+        message: '',
+        open: false,
+    })
+
+}
+
+    const [message, setMessage] = useState<MessageType>({
+        type: 'error',
+        message: '',
+        open: false,
+    })
     const [loading, setLoading] = useState(false)
     const [modalValue, setModalValue] = useState<DataTable | null>(null)
     const [openModal, setOpenModal] = useState<boolean>(false)
@@ -48,11 +72,10 @@ const DataGridComp = () => {
         employeeSignatureName: '',
         id: '',
     }])
+
     const fetchRequest = async () => {
         try {
-            if (!loading) {
-                setLoading(true)
-            }
+            setLoading(true)
             const response = await fetch(host + getURL, {
                 method: 'GET',
                 headers: {
@@ -62,16 +85,20 @@ const DataGridComp = () => {
             const json: { data: DataTable[] } = await response.json()
             setData(json.data)
             setLoading(false)
-            // console.log('json', json.data)
+            setMessage({type: 'success', message: 'data was loaded successfully', open: true,})
+
         } catch
             (error) {
-            console.log('error', error)
+            setLoading(false)
+            setMessage({ type: 'error', message: `error occured! `, open: true,})
+
         }
     }
 
     useEffect(() => {
         fetchRequest()
     }, [])
+
 
     const postRequest = async (value: DataTable) => {
         const url = mode == 'edit' ? editURL + value.id : addURL
@@ -86,11 +113,16 @@ const DataGridComp = () => {
                 },
             })
             checkData(res)
-            fetchRequest()
+            const json: { data: DataTable } = await res.json()
+            const postedData: DataTable = json.data
+            mode == 'add'?setData([...data, postedData]): setData(data.map(row => row.id === postedData.id ? postedData : row))
+            setMessage({type: 'success', message: 'data was saved successfully', open: true,})
+            setLoading(false)
 
         } catch (error) {
             setLoading(false)
-            console.log('error', error) //todo show error
+            setMessage({type: 'error', message: `error occured! ${error.message} `, open: true,})
+
         }
 
         setModalValue(null)
@@ -155,36 +187,34 @@ const DataGridComp = () => {
             return;
         }
         setLoading(true)
+        try {
+            await fetch(`${host}${deleteURL}${idRow}`, {
+                method: 'POST',
+                headers: {
+                    'x-auth': user?.token ? user?.token : ''
+                },
+            })
 
-        await fetch(`${host}${deleteURL}${idRow}`, {
-            method: 'POST',
-            headers: {
-                'x-auth': user?.token ? user?.token : ''
-            },
-        })
-
-        setModalValue(null);
-
-        await fetchRequest()
-
-        //onsole.log('del')
-
-        setLoading(false)
-
+            setModalValue(null);
+            setMessage({...message,
+                type: 'success',
+                message: 'row was deleted successfully',
+                open: true,
+            })
+            setLoading(false)
+            setData([...data.filter((row) => row.id !== idRow)])
+        } catch (error) {
+            setMessage({...message,
+                type: 'error',
+                message: 'error occured',
+                open: true,
+            })
+            setLoading(false)
+        }
     };
 
     const handleAddRow = () => {
-        setModalValue({
-            companySigDate: '',
-            companySignatureName: '',
-            documentName: '',
-            documentStatus: '',
-            documentType: '',
-            employeeNumber: '',
-            employeeSigDate: '',
-            employeeSignatureName: '',
-            id: '',
-        })
+        setModalValue(null)
         setMode('add')
         setOpenModal(true)
     };
@@ -192,7 +222,6 @@ const DataGridComp = () => {
     const handleEditRow = () => {
         setMode('edit')
         setOpenModal(true)
-
     }
 
     const handleCloseModal = (value: DataTable | null) => {
@@ -206,7 +235,6 @@ const DataGridComp = () => {
 
     return (
         <Box sx={{height: 400, width: '100%'}}>
-            {error && <Alert severity="error">{error}</Alert>}
             {loading && <Loader/>}
             <DataGrid
                 getRowId={(data) => data.id!}
@@ -230,6 +258,8 @@ const DataGridComp = () => {
                     запись</Button>
             </Box>
             <ModalComp open={openModal} onClose={handleCloseModal} value={modalValue}/>
+            {message.open && <ErrorComp {...message} handleClose={closeBar}/>}
+            {/*open={message.open} handleClose={message.handleClose} message={message.message} type={message.type}/>*/}
 
         </Box>
     );
