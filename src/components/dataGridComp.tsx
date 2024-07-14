@@ -1,5 +1,5 @@
 import {Box, Button} from "@mui/material";
-import {DataGrid, GridColDef, GridRowParams} from '@mui/x-data-grid';
+import {DataGrid, GridColDef, GridRenderCellParams, GridRowParams} from '@mui/x-data-grid';
 import {useAuth} from "../hooks/useAuth.tsx";
 import {useEffect, useState} from "react";
 import ModalComp from "./modalComp.tsx";
@@ -22,7 +22,6 @@ export interface MessageType {
     type: 'error' | 'success',
     message: string,
     open: boolean,
-   // handleClose: (event: React.SyntheticEvent | Event, reason?: string) => void
 }
 
 const checkData = (res: Response) => {
@@ -40,17 +39,17 @@ const DataGridComp = () => {
     const deleteURL = '/ru/data/v3/testmethods/docs/userdocs/delete/';
     const editURL = '/ru/data/v3/testmethods/docs/userdocs/set/';
 
-const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
-    if (reason === 'clickaway') {
-        return;
-    }
-    setMessage({
-        type: 'error',
-        message: '',
-        open: false,
-    })
+    const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setMessage({
+            type: 'error',
+            message: '',
+            open: false,
+        })
 
-}
+    }
 
     const [message, setMessage] = useState<MessageType>({
         type: 'error',
@@ -90,7 +89,7 @@ const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
         } catch
             (error) {
             setLoading(false)
-            setMessage({ type: 'error', message: `error occured! `, open: true,})
+            setMessage({type: 'error', message: `error occured! `, open: true,})
 
         }
     }
@@ -115,7 +114,7 @@ const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
             checkData(res)
             const json: { data: DataTable } = await res.json()
             const postedData: DataTable = json.data
-            mode == 'add'?setData([...data, postedData]): setData(data.map(row => row.id === postedData.id ? postedData : row))
+            mode == 'add' ? setData([...data, postedData]) : setData(data.map(row => row.id === postedData.id ? postedData : row))
             setMessage({type: 'success', message: 'data was saved successfully', open: true,})
             setLoading(false)
 
@@ -132,45 +131,49 @@ const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
         {field: 'id', headerName: 'ID', width: 90},
         {
             field: 'documentName',
-            headerName: 'doc name',
+            headerName: 'Название документа',
             width: 150,
         },
         {
             field: 'documentStatus',
-            headerName: 'status',
+            headerName: 'Статус',
             width: 150,
         },
         {
             field: 'documentType',
-            headerName: 'type',
+            headerName: 'Тип документа',
             width: 150,
         },
         {
             field: 'employeeNumber',
-            headerName: 'employee number',
+            headerName: 'Номер сотрудника',
             width: 150,
         },
-        {
-            field: 'employeeSigName',
-            headerName: 'employee signature',
-            width: 150,
-        },
+        // {
+        //     field: 'employeeSigName',
+        //     headerName: 'employee signature',
+        //     width: 150,
+        // },
         {
             field: 'employeeSigDate',
-            headerName: 'date',
-            // type: 'date',
-            width: 110,
+            headerName: 'Дата подписания сотрудником',
+            type: 'date',
+            valueFormatter: (params: string) =>
+                 params?.substring(0,10),
+            width: 200,
         },
-        {
-            field: 'companySigName',
-            headerName: 'employee signature',
-            width: 150,
-        },
+        // {
+        //     field: 'companySigName',
+        //     headerName: 'employee signature',
+        //     width: 150,
+        // },
         {
             field: 'companySigDate',
-            headerName: 'date',
-            // type: 'date',
-            width: 110,
+            headerName: 'Дата подписания компанией',
+            type: 'date',
+            valueFormatter: (params: string) =>
+                params?.substring(0,10),
+            width: 200,
         },
     ];
 
@@ -196,7 +199,8 @@ const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
             })
 
             setModalValue(null);
-            setMessage({...message,
+            setMessage({
+                ...message,
                 type: 'success',
                 message: 'row was deleted successfully',
                 open: true,
@@ -204,7 +208,8 @@ const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
             setLoading(false)
             setData([...data.filter((row) => row.id !== idRow)])
         } catch (error) {
-            setMessage({...message,
+            setMessage({
+                ...message,
                 type: 'error',
                 message: 'error occured',
                 open: true,
@@ -259,8 +264,6 @@ const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
             </Box>
             <ModalComp open={openModal} onClose={handleCloseModal} value={modalValue}/>
             {message.open && <ErrorComp {...message} handleClose={closeBar}/>}
-            {/*open={message.open} handleClose={message.handleClose} message={message.message} type={message.type}/>*/}
-
         </Box>
     );
 };

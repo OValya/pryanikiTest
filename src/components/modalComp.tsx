@@ -76,7 +76,7 @@ const ModalComp = ({open, onClose, value}:Props) => {
                     name="companySigDate"
                     label="Company Signature Date"
                     fullWidth
-                    defaultValue={value?.companySigDate}
+                    defaultValue={value?.companySigDate? value?.companySigDate?.split('T')[0] : new Date().toISOString().split('T')[0]}
                     variant="outlined"
                 />
                 <TextField
@@ -104,7 +104,7 @@ const ModalComp = ({open, onClose, value}:Props) => {
                     name="employeeSigDate"
                     label="Employee Signature Date"
                     fullWidth
-                    defaultValue={value?.employeeSigDate}
+                    defaultValue={value?.employeeSigDate? value?.employeeSigDate?.split('T')[0] : new Date().toISOString().split('T')[0]}
                     variant="outlined"
                 />
                 <TextField
