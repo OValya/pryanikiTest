@@ -16,7 +16,7 @@ const Login = () => {
         const password = data.get('password')
         //const host = process.env.REACT_APP_HOST;//'https://test.v5.pryaniky.com' //todo get from env
         const host = import.meta.env.VITE_HOST
-        console.log('host', host)
+        //console.log('host', host)
         const response = await fetch(host + '/ru/data/v3/testmethods/docs/login', {
             method: 'POST',
             headers: {
@@ -75,10 +75,10 @@ const Login = () => {
                 <Button type="submit" variant="contained">Sign in</Button>
 
                 <Typography component={"p"}>
-                    {"Don't have an account?"}
-                    <Link component={RouterLink} variant="body2" to={"/registration"}>
-                        {"Sign Up"}
-                    </Link>
+                    {"Don't have an account? Use 'user13' and 'password'"}
+                    {/*<Link component={RouterLink} variant="body2" to={"/registration"}>*/}
+                    {/*    {"Sign Up"}*/}
+                    {/*</Link>*/}
                 </Typography>
             </Box>
         </Container>
