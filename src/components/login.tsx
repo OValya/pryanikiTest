@@ -1,6 +1,5 @@
 import {FormEvent, useState} from "react";
-import {Box, Button, TextField, Typography, Container, Link, Alert} from "@mui/material";
-import {Link as RouterLink} from "react-router-dom";
+import {Box, Button, TextField, Typography, Container, Alert} from "@mui/material";
 import {useAuth} from "../hooks/useAuth.tsx";
 import Loader from "./loader.tsx";
 

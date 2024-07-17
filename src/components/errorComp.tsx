@@ -1,11 +1,10 @@
 import {Alert, Snackbar} from "@mui/material";
-import {MessageType} from "./dataGridComp.tsx";
 
 type Props = {
     open: boolean
     message: string
     type: 'error' | 'success'
-    handleClose: (event: React.SyntheticEvent | Event, reason?: string) => void
+    handleClose: (_event: React.SyntheticEvent | Event, reason?: string) => void
 }
 
 

@@ -1,5 +1,5 @@
 import {Box, Button} from "@mui/material";
-import {DataGrid, GridColDef, GridRenderCellParams, GridRowParams} from '@mui/x-data-grid';
+import {DataGrid, GridColDef,  GridRowParams} from '@mui/x-data-grid';
 import {useAuth} from "../hooks/useAuth.tsx";
 import {useEffect, useState} from "react";
 import ModalComp from "./modalComp.tsx";
@@ -38,8 +38,8 @@ const DataGridComp = () => {
     const addURL = '/ru/data/v3/testmethods/docs/userdocs/create';
     const deleteURL = '/ru/data/v3/testmethods/docs/userdocs/delete/';
     const editURL = '/ru/data/v3/testmethods/docs/userdocs/set/';
-
-    const closeBar = (event: React.SyntheticEvent | Event, reason?: string) => {
+    //
+    const closeBar = (_event: React.SyntheticEvent | Event, reason?: string) => {
         if (reason === 'clickaway') {
             return;
         }
@@ -118,8 +118,10 @@ const DataGridComp = () => {
             setMessage({type: 'success', message: 'data was saved successfully', open: true,})
             setLoading(false)
 
-        } catch (error) {
+
+        } catch (error ) {
             setLoading(false)
+            // @ts-expect-error error
             setMessage({type: 'error', message: `error occured! ${error.message} `, open: true,})
 
         }

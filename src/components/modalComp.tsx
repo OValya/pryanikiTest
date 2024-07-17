@@ -21,12 +21,12 @@ const ModalComp = ({open, onClose, value}:Props) => {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
-        const formJson:DataTable = Object.fromEntries(formData.entries());
+        const formJson = Object.fromEntries(formData.entries());
         formJson.companySigDate = new Date(formJson.companySigDate as string).toISOString();
         formJson.employeeSigDate = new Date(formJson.employeeSigDate as string).toISOString();
         formJson.id = value?.id || '';
-        console.log(formJson);
-        onClose(formJson);
+        //console.log(formJson);
+        onClose(formJson as unknown as DataTable);
     }
 
     return (
