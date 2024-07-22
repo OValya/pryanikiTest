@@ -1,4 +1,4 @@
-// import TableComp from "./tableComp.tsx";
+
 import DataGridComp from "./dataGridComp.tsx";
 
 
@@ -9,7 +9,6 @@ const Home = () => {
 
             <DataGridComp/>
 
-            {/*<TableComp/>*/}
         </div>
     );
 };

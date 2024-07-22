@@ -13,9 +13,7 @@ const Login = () => {
         const data = new FormData(e.currentTarget)
         const username = data.get('username')
         const password = data.get('password')
-        //const host = process.env.REACT_APP_HOST;//'https://test.v5.pryaniky.com' //todo get from env
         const host = import.meta.env.VITE_HOST
-        //console.log('host', host)
         const response = await fetch(host + '/ru/data/v3/testmethods/docs/login', {
             method: 'POST',
             headers: {
@@ -28,14 +26,13 @@ const Login = () => {
         })
         const json = await response.json()
         setLoading(false)
-       // console.log('json', json)
         if (json.data) {
             const token = json.data['token']
 
             user?.login({token: token})
         } else {
             setError(json.error_text)
-            //alert("Invalid username or password");
+
         }
     }
 
@@ -75,9 +72,6 @@ const Login = () => {
 
                 <Typography component={"p"}>
                     {"Don't have an account? Use 'user13' and 'password'"}
-                    {/*<Link component={RouterLink} variant="body2" to={"/registration"}>*/}
-                    {/*    {"Sign Up"}*/}
-                    {/*</Link>*/}
                 </Typography>
             </Box>
         </Container>

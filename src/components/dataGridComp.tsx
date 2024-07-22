@@ -151,11 +151,6 @@ const DataGridComp = () => {
             headerName: 'Номер сотрудника',
             width: 150,
         },
-        // {
-        //     field: 'employeeSigName',
-        //     headerName: 'employee signature',
-        //     width: 150,
-        // },
         {
             field: 'employeeSigDate',
             headerName: 'Дата подписания сотрудником',
@@ -164,11 +159,7 @@ const DataGridComp = () => {
                  params?.substring(0,10),
             width: 200,
         },
-        // {
-        //     field: 'companySigName',
-        //     headerName: 'employee signature',
-        //     width: 150,
-        // },
+
         {
             field: 'companySigDate',
             headerName: 'Дата подписания компанией',
