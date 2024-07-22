@@ -7,7 +7,7 @@ type Props ={
 }
 const PrivateRoute = ({children}:Props) => {
     const user = useAuth();
-    return user?.token ? children : <Navigate to={"/login"}/>
+    return user?.token ? children : <Navigate to={"/pryanikiTest/login"}/>
 };
 
 export default PrivateRoute;

@@ -14,7 +14,7 @@ const BarComp = () => {
             logout();
         }
         else {
-            navigate('/login')
+            navigate('/pryanikiTest/login')
         }
     }
     return (

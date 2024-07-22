@@ -11,13 +11,13 @@ function App() {
         <AuthProvider>
             <BarComp/>
             <Routes>
-                <Route path="/"
+                <Route path="/pryanikiTest/"
                        element={
                     <PrivateRoute>
                         <Home />
                     </PrivateRoute>}
                 />
-                <Route path="/login" element={<Login />} />
+                <Route path="/pryanikiTest/login" element={<Login />} />
             </Routes>
         </AuthProvider>
     );
