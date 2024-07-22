@@ -20,7 +20,7 @@ const AuthProvider = ({children}:Props) => {
     const login = async (data:{token:string}) => {
         setToken(data.token)
         localStorage.setItem('token', data.token)
-        navigate("/", {replace:true})
+        navigate("/pryanikiTest/", {replace:true})
     }
 
     const logout = () => {
